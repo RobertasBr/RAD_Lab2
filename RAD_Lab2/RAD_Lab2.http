@@ -1,30 +1,108 @@
 ﻿@RAD_Lab2_HostAddress = https://localhost:7096
 
-POST {{RAD_Lab2_HostAddress}}/todoitems
-Content-Type: application/json
+GET {{RAD_Lab2_HostAddress}}/adItems/
 
+###
+
+POST {{RAD_Lab2_HostAddress}}/adItems/
+Content-Type: application/json
 {
-  "name":"walk dog",
-  "isComplete":true,
-  "priority":1
+  "SellerId":1,
+  "CategoryId":1,
+  "Description":"Hardware Store Items",
+  "Price":11.99
 }
 ###
 
-GET {{RAD_Lab2_HostAddress}}/todoitems
+GET {{RAD_Lab2_HostAddress}}/adItems/1
 
 ###
 
-PUT {{RAD_Lab2_HostAddress}}/todoitems/1
+PUT {{RAD_Lab2_HostAddress}}/adItems/1
 Content-Type: application/json
 {
-  "name": "feed fish",
-  "isComplete": false
+  "SellerId":2,
+  "CategoryId":2,
+  "Description":"Hardware Store Wares",
+  "Price":14.99
 }
 ###
 
-DELETE {{RAD_Lab2_HostAddress}}/todoitems/1
+DELETE {{RAD_Lab2_HostAddress}}/adItems/1
 
 ###
 
-GET {{RAD_Lab2_HostAddress}}/todoitems/priority?priority=1
+GET {{RAD_Lab2_HostAddress}}/adItems/seller/1
+
+###
+
+GET {{RAD_Lab2_HostAddress}}/adItems/category/1
+
+###
+
+POST {{RAD_Lab2_HostAddress}}/adItems/bulk
+Content-Type: application/json
+
+[
+    {
+        "SellerId": 1,
+        "CategoryId": 1,
+        "Description": "Hammer",
+        "Price": 15.99
+    },
+    {
+        "SellerId": 1,
+        "CategoryId": 1,
+        "Description": "Nails (100 Pack)",
+        "Price": 4.99
+    },
+    {
+        "SellerId": 2,
+        "CategoryId": 1,
+        "Description": "Screwdriver Set",
+        "Price": 25.50
+    },
+    {
+        "SellerId": 2,
+        "CategoryId": 2,
+        "Description": "Drill",
+        "Price": 129.99
+    },
+    {
+        "SellerId": 3,
+        "CategoryId": 2,
+        "Description": "Wood Glue",
+        "Price": 7.49
+    },
+    {
+        "SellerId": 3,
+        "CategoryId": 3,
+        "Description": "Lawn Mower",
+        "Price": 299.99
+    },
+    {
+        "SellerId": 4,
+        "CategoryId": 3,
+        "Description": "Garden Hose",
+        "Price": 19.99
+    },
+    {
+        "SellerId": 4,
+        "CategoryId": 3,
+        "Description": "Fertilizer",
+        "Price": 10.99
+    },
+    {
+        "SellerId": 5,
+        "CategoryId": 4,
+        "Description": "Paint (1 Gallon)",
+        "Price": 25.00
+    },
+    {
+        "SellerId": 5,
+        "CategoryId": 4,
+        "Description": "Brush Set",
+        "Price": 12.50
+    }
+]
 ###

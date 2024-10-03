@@ -2,11 +2,11 @@
 
 namespace RAD_Lab2
 {
-    class TodoDb : DbContext
+    class AdDb : DbContext
     {
-        public TodoDb(DbContextOptions<TodoDb> options)
+        public AdDb(DbContextOptions<AdDb> options)
             : base(options) { }
 
-        public DbSet<Todo> Todos => Set<Todo>();
+        public DbSet<Ad> Ads => Set<Ad>();
     }
 }

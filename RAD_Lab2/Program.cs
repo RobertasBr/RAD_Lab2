@@ -2,55 +2,66 @@ using Microsoft.EntityFrameworkCore;
 using RAD_Lab2;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<TodoDb>(opt => opt.UseInMemoryDatabase("TodoList"));
+builder.Services.AddDbContext<AdDb>(opt => opt.UseInMemoryDatabase("TodoList"));
 //builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 var app = builder.Build();
 
-var todoItems = app.MapGroup("/todoitems");
+var adItems = app.MapGroup("/adItems");
 
-todoItems.MapGet("/", async (TodoDb db) =>
-    await db.Todos.ToListAsync());
+adItems.MapGet("/", async (AdDb db) =>
+    await db.Ads.ToListAsync());
 
-todoItems.MapGet("/complete", async (TodoDb db) =>
-    await db.Todos.Where(t => t.IsComplete).ToListAsync());
-
-todoItems.MapGet("/priority", async (TodoDb db, int priority) =>
-    await db.Todos.Where(t => t.Priority == priority).ToListAsync());
-
-todoItems.MapGet("/{id}", async (int id, TodoDb db) =>
-    await db.Todos.FindAsync(id)
-        is Todo todo
-            ? Results.Ok(todo)
+adItems.MapGet("/{id}", async (int id, AdDb db) =>
+    await db.Ads.FindAsync(id)
+        is Ad ads
+            ? Results.Ok(ads)
             : Results.NotFound());
 
-todoItems.MapPost("/", async (Todo todo, TodoDb db) =>
+adItems.MapGet("/seller/{id}", async (AdDb db, int id) =>
+    await db.Ads.Where(ad => ad.SellerId == id).ToListAsync());
+
+adItems.MapGet("/category/{id}", async (AdDb db, int id) =>
+    await db.Ads
+        .Where(ad => ad.CategoryId == id)
+        .OrderBy(ad => ad.Description)
+        .ToListAsync());
+
+adItems.MapPost("/", async (Ad ad, AdDb db) =>
 {
-    db.Todos.Add(todo);
+    db.Ads.Add(ad);
     await db.SaveChangesAsync();
 
-    return Results.Created($"/todoitems/{todo.Id}", todo);
+    return Results.Created($"/adItems/{ad.Id}", ad);
 });
 
-todoItems.MapPut("/{id}", async (int id, Todo inputTodo, TodoDb db) =>
+adItems.MapPost("/bulk", async (List<Ad> ads, AdDb db) =>
 {
-    var todo = await db.Todos.FindAsync(id);
+    db.Ads.AddRange(ads);
+    await db.SaveChangesAsync();
 
-    if (todo is null) return Results.NotFound();
+    return Results.Created($"/adItems/bulk", ads);
+});
 
-    todo.Name = inputTodo.Name;
-    todo.IsComplete = inputTodo.IsComplete;
-    todo.Priority = inputTodo.Priority;
+adItems.MapPut("/{id}", async (int id, Ad inputAd, AdDb db) =>
+{
+    var ad = await db.Ads.FindAsync(id);
 
+    if (ad is null) return Results.NotFound();
+
+    ad.SellerId = inputAd.SellerId;
+    ad.CategoryId = inputAd.CategoryId;
+    ad.Description = inputAd.Description;
+    ad.Price = inputAd.Price;
     await db.SaveChangesAsync();
 
     return Results.NoContent();
 });
 
-todoItems.MapDelete("/{id}", async (int id, TodoDb db) =>
+adItems.MapDelete("/{id}", async (int id, AdDb db) =>
 {
-    if (await db.Todos.FindAsync(id) is Todo todo)
+    if (await db.Ads.FindAsync(id) is Ad ad)
     {
-        db.Todos.Remove(todo);
+        db.Ads.Remove(ad);
         await db.SaveChangesAsync();
         return Results.NoContent();
     }
